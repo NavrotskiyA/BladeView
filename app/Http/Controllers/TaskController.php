@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Label;
-use App\Models\Task;
+use App\Models\Task\Task;
+use App\Services\TaskHistory\TaskHistory;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -45,10 +45,13 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response|string
      */
-    public function show($id)
+    public function show($id,TaskHistory $taskHistory)
     {
-//        $task = Task::query()->where('id',$id)->first();
-//        return $task->status->name."";
+        $task = Task::query()->first();
+//        $task->creator_id = 2;
+
+        $taskHistory->saveTaskHistory($task);
+//        $task_h->saveLabelHistory(1,2);
         return "Task will show entity with id $id";
     }
 
