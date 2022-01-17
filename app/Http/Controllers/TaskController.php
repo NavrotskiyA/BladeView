@@ -45,12 +45,12 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response|string
      */
-    public function show($id,TaskHistory $taskHistory)
+    public function show($id)
     {
         $task = Task::query()->first();
-//        $task->creator_id = 2;
+        $task->creator_id = 2;
 
-        $taskHistory->saveTaskHistory($task);
+        $user = TaskHistory::saveTaskHistory($task, false);
 //        $task_h->saveLabelHistory(1,2);
         return "Task will show entity with id $id";
     }
