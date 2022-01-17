@@ -14,10 +14,10 @@ class TaskHistory
      * @return void
      * Saving changed attributes of task to history, other - null by default. If that have no changes it save all task data to history
      */
-    public function saveTaskHistory(Task $task)
+    public function saveTaskHistory(Task $task, bool $fullSave = true)
     {
         $taskHistory = new \App\Models\TaskHistory\TaskHistory();
-        if($task->isDirty()){
+        if($task->isDirty() && !$fullSave){
             foreach ($task->getDirty() as $key => $dirty){
                $taskHistory->$key = $task->getOriginal("$key");
             }
