@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TaskRequestValidator;
+use App\Models\Task\Status;
 use App\Models\Task\Task;
+use App\Models\User;
 use App\Services\TaskHistory\TaskHistory;
 use Illuminate\Http\Request;
+use phpDocumentor\Reflection\Types\Collection;
 
 class TaskController extends Controller
 {
@@ -15,7 +19,8 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return "Task index method";
+        $tasks = Task::query()->paginate(10);
+        return view('task.task-list',['tasks' => $tasks]);
     }
 
     /**
@@ -25,18 +30,24 @@ class TaskController extends Controller
      */
     public function create()
     {
-        return "Task create method";
+        return view('task.form.create',[
+            'statuses' => Status::query()->get()
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param TaskRequestValidator $task
      * @return \Illuminate\Http\Response|string
      */
-    public function store(Request $request)
+    public function store(TaskRequestValidator $task)
     {
-        return "Task store method";
+        $newTask = new Task();
+        $newTask->setParams($task->toArray());
+        $newTask->creator_id = 1;
+        $newTask->save();
+        return view('task.task',['task' => $newTask, 'new' => 1]);
     }
 
     /**
@@ -47,12 +58,8 @@ class TaskController extends Controller
      */
     public function show($id)
     {
-        $task = Task::query()->first();
-        $task->creator_id = 2;
-
-        $user = TaskHistory::saveTaskHistory($task, false);
-//        $task_h->saveLabelHistory(1,2);
-        return "Task will show entity with id $id";
+        $task = Task::query()->where('id', $id)->first();
+        return view('task.task',['task' => $task]);
     }
 
     /**
@@ -63,7 +70,13 @@ class TaskController extends Controller
      */
     public function edit($id)
     {
-        return "Task will edit entity with id $id";
+        /** @var Collection $statuses */
+        $statuses = Status::query()->get();
+        $task = Task::query()->where('id', $id)->first();
+        return view('task.form.edit',[
+            'statuses' => $statuses,
+            'task' => $task
+        ]);
     }
 
     /**
@@ -73,9 +86,12 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response|string
      */
-    public function update(Request $request, $id)
+    public function update(TaskRequestValidator $task, $id)
     {
-        return "Task will update entity with id $id";
+        $newTask = Task::query()->where('id', $id)->first();
+        $newTask->setParams($task->all());
+        $newTask->save();
+        return view('task.task',['task' => $newTask]);
     }
 
     /**
@@ -86,6 +102,7 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        return "Task will destroy entity with id $id";
+        $task = Task::query()->where('id', $id)->delete();
+        return redirect(route('task.index'));
     }
 }

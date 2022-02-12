@@ -3,10 +3,13 @@
 namespace App\Models\Task;
 
 use App\Models\TaskHistory\TaskHistory;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use function PHPUnit\Framework\objectHasAttribute;
 
 /**
+ * @property $id
  * @property $title
  * @property $creator_id
  * @property $content
@@ -14,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property $labels
  * @property $status
+ * @property $user
  */
 class Task extends Model
 {
@@ -29,5 +33,17 @@ class Task extends Model
     public function taskHistories()
     {
         return $this->hasMany(TaskHistory::class);
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'creator_id', 'id');
+    }
+    public function setParams(array $params)
+    {
+        unset($params['_token']);
+        unset($params['_method']);
+       foreach ($params as $key => $param){
+           $this->$key = $param;
+       }
     }
 }

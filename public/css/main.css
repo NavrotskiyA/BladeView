@@ -1,0 +1,20 @@
+@import url(https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css);
+@import url(https://fonts.googleapis.com/css?family=Lato:300,400,700);
+
+body {
+    font-family: 'Lato', sans-serif;
+    background: #353535;
+    color: #FFF;
+}
+#main{
+    background-color: #353535;
+}
+.input-group{
+    margin-top: 10px;
+}
+a{
+    width: 200px; height: 45px; border: 2px solid #D24D57; background-color: #353535;
+}
+a:hover{
+    color: white;
+}

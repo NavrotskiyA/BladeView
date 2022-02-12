@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Task\Task;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -42,4 +43,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    public function tasks()
+    {
+        return $this->belongsToMany(Task::class);
+    }
 }
